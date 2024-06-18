@@ -49,10 +49,7 @@ type Form = z.infer<typeof formSchema>;
 type User = Omit<
   InferSelectModel<typeof users>,
   'emailVerified' | 'name' | 'email'
-> & {
-  followers: InferSelectModel<typeof followers>[];
-  followings: InferSelectModel<typeof followers>[];
-};
+>;
 
 export const EditProfileDialog = ({ user }: { user: User }) => {
   const [open, setOpen] = useState(false);
@@ -70,7 +67,6 @@ export const EditProfileDialog = ({ user }: { user: User }) => {
     setOpen(false);
 
     let key: string | undefined;
-    let uploadURL: string | undefined;
 
     if (values.image) {
       key = `${generateRandomString(6)}-${values.image.name}`;

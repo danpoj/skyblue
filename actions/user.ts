@@ -2,9 +2,9 @@
 
 import { auth } from '@/auth';
 import { db } from '@/db/drizzle';
-import { users } from '@/db/schema';
-import { InferInsertModel, InferSelectModel, and, eq, not } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { followers, users } from '@/db/schema';
+import { InferSelectModel, and, eq } from 'drizzle-orm';
+import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 export const getUserMe = async () => {
@@ -68,5 +68,27 @@ export const editUser = async (
       return { message: 'error', error: error.message };
     }
     return { message: 'error', error: 'server error' };
+  }
+};
+
+export const followUser = async (id: string, isFollowing: boolean) => {
+  const session = await auth();
+
+  if (!session) return { message: 'error', error: 'unauthorized' };
+
+  if (isFollowing) {
+    await db
+      .delete(followers)
+      .where(
+        and(
+          eq(followers.userId, session.user?.id!),
+          eq(followers.followsUserId, id)
+        )
+      );
+  } else {
+    await db.insert(followers).values({
+      userId: session.user?.id!,
+      followsUserId: id,
+    });
   }
 };
