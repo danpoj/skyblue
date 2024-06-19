@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS "authenticator" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "followers" (
-	"userId" text NOT NULL,
-	"followsUserId" text NOT NULL,
-	CONSTRAINT "followers_userId_followsUserId_pk" PRIMARY KEY("userId","followsUserId")
+	"fromId" text NOT NULL,
+	"toId" text NOT NULL,
+	CONSTRAINT "followers_fromId_toId_pk" PRIMARY KEY("fromId","toId")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "posts" (
@@ -49,9 +49,10 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"email" text NOT NULL,
 	"emailVerified" timestamp,
 	"image" text DEFAULT 'https://avatars.githubusercontent.com/u/88086373?v=4' NOT NULL,
-	"nickname" text DEFAULT 'user-ygxxmA5saoeL' NOT NULL,
+	"nickname" text DEFAULT 'user-9T2KLuhw1gJQ' NOT NULL,
+	"handle" text DEFAULT '@user-K5K1c7ASrw' NOT NULL,
 	"description" text DEFAULT '' NOT NULL,
-	CONSTRAINT "user_nickname_unique" UNIQUE("nickname")
+	CONSTRAINT "user_handle_unique" UNIQUE("handle")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verificationToken" (
@@ -74,13 +75,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "followers" ADD CONSTRAINT "followers_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "followers" ADD CONSTRAINT "followers_fromId_user_id_fk" FOREIGN KEY ("fromId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "followers" ADD CONSTRAINT "followers_followsUserId_user_id_fk" FOREIGN KEY ("followsUserId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "followers" ADD CONSTRAINT "followers_toId_user_id_fk" FOREIGN KEY ("toId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

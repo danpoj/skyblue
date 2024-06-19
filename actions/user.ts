@@ -3,7 +3,7 @@
 import { auth } from '@/auth';
 import { db } from '@/db/drizzle';
 import { followers, users } from '@/db/schema';
-import { InferSelectModel, and, eq } from 'drizzle-orm';
+import { InferSelectModel, and, eq, not } from 'drizzle-orm';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -52,6 +52,17 @@ export const editUser = async (
   if (!session) return { message: 'error', error: 'unauthorized' };
 
   try {
+    const dbUserWithSameNickname = await db.query.users.findFirst({
+      where: and(
+        not(eq(users.id, session.user?.id!)),
+        eq(users.nickname, nickname)
+      ),
+    });
+
+    if (dbUserWithSameNickname) {
+      return { message: 'error', error: 'duplicated nickname' };
+    }
+
     const updatedUser = await db
       .update(users)
       .set({
@@ -80,15 +91,12 @@ export const followUser = async (id: string, isFollowing: boolean) => {
     await db
       .delete(followers)
       .where(
-        and(
-          eq(followers.userId, session.user?.id!),
-          eq(followers.followsUserId, id)
-        )
+        and(eq(followers.fromId, session.user?.id!), eq(followers.toId, id))
       );
   } else {
     await db.insert(followers).values({
-      userId: session.user?.id!,
-      followsUserId: id,
+      fromId: session.user?.id!,
+      toId: id,
     });
   }
 };

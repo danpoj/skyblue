@@ -27,6 +27,7 @@ import { generateRandomString } from '@/lib/generate-random-string';
 import { getSignedUrlForS3Object } from '@/lib/s3';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InferSelectModel } from 'drizzle-orm';
+import { Camera } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -73,8 +74,6 @@ export const EditProfileDialog = ({ user }: { user: User }) => {
 
       const uploadURL = await getSignedUrlForS3Object(key, values.image.type);
 
-      console.log(uploadURL);
-
       toast('업로드 중... 🚧', { description: '잠시만 기다려주세요' });
 
       await fetch(uploadURL, {
@@ -100,6 +99,7 @@ export const EditProfileDialog = ({ user }: { user: User }) => {
 
     toast('Success 🎉', { description: '유저 정보가 업데이트 되었습니다' });
     router.refresh();
+    router.replace(`/profile/${data.data.nickname}`);
   };
 
   return (
@@ -129,6 +129,9 @@ export const EditProfileDialog = ({ user }: { user: User }) => {
                 <FormItem className='flex justify-center'>
                   <FormControl>
                     <div className='relative w-32 h-32'>
+                      <div className='size-7 flex items-center justify-center rounded-full bg-slate-800 absolute right-1 bottom-1 z-10 pointer-events-none'>
+                        <Camera className='size-4 stroke-white' />
+                      </div>
                       <Avatar className='w-full h-full'>
                         <AvatarImage
                           src={

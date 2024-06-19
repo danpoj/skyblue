@@ -5,29 +5,57 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1718715354149,
-      "tag": "0000_omniscient_kid_colt",
+      "when": 1718776717055,
+      "tag": "0000_brainy_susan_delgado",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1718717725481,
-      "tag": "0001_breezy_invisible_woman",
+      "when": 1718777145903,
+      "tag": "0001_sudden_sleepwalker",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1718720805877,
-      "tag": "0002_striped_preak",
+      "when": 1718777655324,
+      "tag": "0002_flimsy_flatman",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1718720952314,
-      "tag": "0003_complex_the_enforcers",
+      "when": 1718780971398,
+      "tag": "0003_pale_lightspeed",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1718781114182,
+      "tag": "0004_futuristic_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1718781665832,
+      "tag": "0005_living_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1718800336938,
+      "tag": "0006_wise_squadron_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1718811668257,
+      "tag": "0007_foamy_hex",
       "breakpoints": true
     }
   ]

@@ -1,6 +1,6 @@
 {
-  "id": "17849482-d7df-4752-b868-17e21781e2c9",
-  "prevId": "10e9c200-b1f6-42cb-b400-6c2f8be5fc5d",
+  "id": "ecfc4bb6-4089-4ec8-ac7a-038bfd360b14",
+  "prevId": "1e954b5d-e7a7-436e-bfff-25c62656188e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -194,14 +194,14 @@
       "name": "followers",
       "schema": "",
       "columns": {
-        "userId": {
-          "name": "userId",
+        "fromId": {
+          "name": "fromId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "followsUserId": {
-          "name": "followsUserId",
+        "toId": {
+          "name": "toId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -209,12 +209,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "followers_userId_user_id_fk": {
-          "name": "followers_userId_user_id_fk",
+        "followers_fromId_user_id_fk": {
+          "name": "followers_fromId_user_id_fk",
           "tableFrom": "followers",
           "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "fromId"
           ],
           "columnsTo": [
             "id"
@@ -222,12 +222,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "followers_followsUserId_user_id_fk": {
-          "name": "followers_followsUserId_user_id_fk",
+        "followers_toId_user_id_fk": {
+          "name": "followers_toId_user_id_fk",
           "tableFrom": "followers",
           "tableTo": "user",
           "columnsFrom": [
-            "followsUserId"
+            "toId"
           ],
           "columnsTo": [
             "id"
@@ -237,11 +237,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "followers_userId_followsUserId_pk": {
-          "name": "followers_userId_followsUserId_pk",
+        "followers_fromId_toId_pk": {
+          "name": "followers_fromId_toId_pk",
           "columns": [
-            "userId",
-            "followsUserId"
+            "fromId",
+            "toId"
           ]
         }
       },
@@ -350,15 +350,13 @@
           "name": "nickname",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'user-9Or7B0SJtiKl'"
+          "notNull": true
         },
         "handle": {
           "name": "handle",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'@user-zKHDhwzIp9'"
+          "notNull": true
         },
         "description": {
           "name": "description",

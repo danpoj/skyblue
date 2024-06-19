@@ -1,4 +1,3 @@
-import { generateRandomString } from '@/lib/generate-random-string';
 import { relations } from 'drizzle-orm';
 import {
   boolean,
@@ -8,6 +7,8 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
 
@@ -18,14 +19,9 @@ export const users = pgTable('user', {
   name: text('name'),
   email: text('email').notNull(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
-  image: text('image')
-    .notNull()
-    .default('https://avatars.githubusercontent.com/u/88086373?v=4'),
-  nickname: text('nickname').default(generateRandomString(12)).notNull(),
-  handle: text('handle')
-    .default(`@${generateRandomString(10)}`)
-    .notNull()
-    .unique(),
+  image: text('image').notNull(),
+  nickname: text('nickname').notNull().unique(),
+  handle: text('handle').notNull().unique(),
   description: text('description').default('').notNull(),
 });
 
@@ -98,38 +94,67 @@ export const authenticators = pgTable(
 
 export const posts = pgTable('posts', {
   id: serial('id').primaryKey(),
-  content: text('content').notNull(),
+  text: text('text').notNull(),
+  authorId: text('authorId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
 });
 
-export const usersRelation = relations(users, ({ many }) => ({
-  followers: many(followers, { relationName: 'user_followers' }),
-  followings: many(followers, { relationName: 'user_followings' }),
-}));
+export const postImages = pgTable('postImages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  src: varchar('src', { length: 255 }).notNull(),
+  postId: integer('postId')
+    .notNull()
+    .references(() => posts.id, { onDelete: 'cascade' }),
+});
 
 export const followers = pgTable(
   'followers',
   {
-    userId: text('userId')
+    fromId: text('fromId')
       .notNull()
       .references(() => users.id),
-    followsUserId: text('followsUserId')
+    toId: text('toId')
       .notNull()
       .references(() => users.id),
   },
   (followers) => ({
-    pk: primaryKey({ columns: [followers.userId, followers.followsUserId] }),
+    pk: primaryKey({ columns: [followers.fromId, followers.toId] }),
   })
 );
 
+export const usersRelation = relations(users, ({ many }) => ({
+  followers: many(followers, { relationName: 'user_followers' }),
+  follows: many(followers, { relationName: 'user_follows' }),
+  posts: many(posts, { relationName: 'user_posts' }),
+}));
+
+export const postsRelation = relations(posts, ({ one, many }) => ({
+  posts: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+    relationName: 'user_posts',
+  }),
+  images: many(postImages, { relationName: 'post_images' }),
+}));
+
+export const postImagesRelation = relations(postImages, ({ one }) => ({
+  posts: one(posts, {
+    fields: [postImages.postId],
+    references: [posts.id],
+    relationName: 'post_images',
+  }),
+}));
+
 export const followersRelation = relations(followers, ({ one }) => ({
-  user: one(users, {
-    fields: [followers.userId],
+  followers: one(users, {
+    fields: [followers.toId],
     references: [users.id],
     relationName: 'user_followers',
   }),
-  followUser: one(users, {
-    fields: [followers.followsUserId],
+  follows: one(users, {
+    fields: [followers.fromId],
     references: [users.id],
-    relationName: 'user_followings',
+    relationName: 'user_follows',
   }),
 }));

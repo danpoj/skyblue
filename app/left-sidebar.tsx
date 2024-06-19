@@ -4,19 +4,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { SignIn } from '@/components/sign-in';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Home, Settings, User } from 'lucide-react';
+import { Home, Settings, SquarePen, User } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { db } from '@/db/drizzle';
 import { InferSelectModel, eq } from 'drizzle-orm';
 import { users } from '@/db/schema';
 import { notFound } from 'next/navigation';
+import { NewPostButton } from './new-post-button';
 
 export const LeftSidebar = async () => {
   const session = await auth();
 
   return (
-    <header className='w-60 p-4 space-y-3 h-full max-h-full'>
+    <header className='w-60 p-4 space-y-3 h-fit sticky top-0'>
       {session ? (
         <Suspense
           fallback={
@@ -58,7 +59,7 @@ export const LeftSidebarLoggedIn = async ({ id }: { id: string }) => {
       icon: Home,
     },
     {
-      href: `/profile/${user.handle}`,
+      href: `/profile/${user.nickname}`,
       text: '프로필',
       icon: User,
     },
@@ -71,7 +72,9 @@ export const LeftSidebarLoggedIn = async ({ id }: { id: string }) => {
 
   return (
     <>
-      <UserAvatar user={user} />
+      <div className='w-fit'>
+        <UserAvatar user={user} />
+      </div>
 
       <nav className='flex flex-col'>
         {links.map((link) => {
@@ -92,13 +95,15 @@ export const LeftSidebarLoggedIn = async ({ id }: { id: string }) => {
           );
         })}
       </nav>
+
+      <NewPostButton user={user} />
     </>
   );
 };
 
 const UserAvatar = ({ user }: { user: InferSelectModel<typeof users> }) => {
   return (
-    <Link href={`/profile/${user.handle}`}>
+    <Link href={`/profile/${user.nickname}`}>
       <Avatar className='h-14 w-14'>
         <AvatarImage src={user.image!} />
         <AvatarFallback>{user.name}</AvatarFallback>

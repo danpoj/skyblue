@@ -1,6 +1,6 @@
 {
-  "id": "120dc35e-fd7b-45c5-9546-7e67cfbb4674",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "4164915e-84fa-478a-8cca-4a17016bcf67",
+  "prevId": "114d701b-9d28-4667-b439-2bad7ac4428d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -343,22 +343,21 @@
           "name": "image",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'https://avatars.githubusercontent.com/u/88086373?v=4'"
+          "notNull": true
         },
         "nickname": {
           "name": "nickname",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'user-9T2KLuhw1gJQ'"
+          "default": "'user-6xIKuGdqpnan'"
         },
         "handle": {
           "name": "handle",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'@user-K5K1c7ASrw'"
+          "default": "'user-Yic6FZZUmZR2'"
         },
         "description": {
           "name": "description",

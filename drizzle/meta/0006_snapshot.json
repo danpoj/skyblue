@@ -1,6 +1,6 @@
 {
-  "id": "120dc35e-fd7b-45c5-9546-7e67cfbb4674",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "d25ce9a8-1971-4702-a549-2031d9de83f9",
+  "prevId": "4164915e-84fa-478a-8cca-4a17016bcf67",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -247,6 +247,49 @@
       },
       "uniqueConstraints": {}
     },
+    "public.postImages": {
+      "name": "postImages",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "src": {
+          "name": "src",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postId": {
+          "name": "postId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "postImages_postId_posts_id_fk": {
+          "name": "postImages_postId_posts_id_fk",
+          "tableFrom": "postImages",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "postId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.posts": {
       "name": "posts",
       "schema": "",
@@ -257,8 +300,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "content": {
-          "name": "content",
+        "text": {
+          "name": "text",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -343,22 +386,19 @@
           "name": "image",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'https://avatars.githubusercontent.com/u/88086373?v=4'"
+          "notNull": true
         },
         "nickname": {
           "name": "nickname",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'user-9T2KLuhw1gJQ'"
+          "notNull": true
         },
         "handle": {
           "name": "handle",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'@user-K5K1c7ASrw'"
+          "notNull": true
         },
         "description": {
           "name": "description",
@@ -372,6 +412,13 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "user_nickname_unique": {
+          "name": "user_nickname_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nickname"
+          ]
+        },
         "user_handle_unique": {
           "name": "user_handle_unique",
           "nullsNotDistinct": false,

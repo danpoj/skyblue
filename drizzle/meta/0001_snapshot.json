@@ -1,6 +1,6 @@
 {
-  "id": "e8a8143d-80d0-4bac-84b2-98dd7615a3a6",
-  "prevId": "5d7b355a-b6c8-41b9-be70-ae508559a88c",
+  "id": "eb158f2a-1626-4955-89a0-fc155c933ab5",
+  "prevId": "120dc35e-fd7b-45c5-9546-7e67cfbb4674",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -194,14 +194,14 @@
       "name": "followers",
       "schema": "",
       "columns": {
-        "userId": {
-          "name": "userId",
+        "fromId": {
+          "name": "fromId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "followsUserId": {
-          "name": "followsUserId",
+        "toId": {
+          "name": "toId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -209,12 +209,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "followers_userId_user_id_fk": {
-          "name": "followers_userId_user_id_fk",
+        "followers_fromId_user_id_fk": {
+          "name": "followers_fromId_user_id_fk",
           "tableFrom": "followers",
           "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "fromId"
           ],
           "columnsTo": [
             "id"
@@ -222,12 +222,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "followers_followsUserId_user_id_fk": {
-          "name": "followers_followsUserId_user_id_fk",
+        "followers_toId_user_id_fk": {
+          "name": "followers_toId_user_id_fk",
           "tableFrom": "followers",
           "tableTo": "user",
           "columnsFrom": [
-            "followsUserId"
+            "toId"
           ],
           "columnsTo": [
             "id"
@@ -237,11 +237,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "followers_userId_followsUserId_pk": {
-          "name": "followers_userId_followsUserId_pk",
+        "followers_fromId_toId_pk": {
+          "name": "followers_fromId_toId_pk",
           "columns": [
-            "userId",
-            "followsUserId"
+            "fromId",
+            "toId"
           ]
         }
       },
@@ -350,8 +350,13 @@
           "name": "nickname",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'user-w5roTXyn07VN'"
+          "notNull": true
+        },
+        "handle": {
+          "name": "handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "description": {
           "name": "description",
@@ -365,11 +370,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_nickname_unique": {
-          "name": "user_nickname_unique",
+        "user_handle_unique": {
+          "name": "user_handle_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "nickname"
+            "handle"
           ]
         }
       }

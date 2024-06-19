@@ -19,7 +19,7 @@ const bottoms = ['피드백', '개인정보', '이용약관', '도움말'];
 
 export const RightSidebar = () => {
   return (
-    <aside className='w-80 p-4 hidden lg:block'>
+    <aside className='w-80 p-4 hidden lg:block sticky top-0 h-fit'>
       <div className='relative'>
         <Input
           placeholder='검색'
