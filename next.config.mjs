@@ -3,13 +3,14 @@ const nextConfig = {
   reactStrictMode: false,
   output: 'standalone',
   images: {
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         hostname: 'pub-91d41fc69e574b6b8e7b0ca20fdb95b7.r2.dev',
         protocol: 'https',
       },
     ],
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/avif'],
   },
 };
 
