@@ -3,16 +3,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import { Ellipsis } from 'lucide-react';
 import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getProfile } from './actions';
 import { EditProfileDialog } from './edit-profile-dialog';
 import { FollowButton } from './follow-button';
-import { useQuery } from '@tanstack/react-query';
-import { getProfile } from './actions';
-import { notFound } from 'next/navigation';
 import ProfileSkeleton from './profile-skeleton';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
+import { motion } from 'framer-motion';
 
 export function ProfilePage({
   nickname,
@@ -23,7 +25,7 @@ export function ProfilePage({
 }) {
   const decodedNickname = decodeURIComponent(nickname);
 
-  const { data, isPending, isError, isSuccess } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
       return getProfile(decodedNickname, session.user?.id!);
@@ -34,7 +36,6 @@ export function ProfilePage({
   if (isError) throw new Error('error on profile');
   const { followers, followings, isFollowingResult, user } = data;
   if (!user) return <ProfileSkeleton />;
-  console.log(user);
 
   const isFollowing = !!isFollowingResult;
 
@@ -122,13 +123,15 @@ export function ProfilePage({
                   >
                     {post.images.map((image, index) => (
                       <div key={image.id}>
-                        <Image
-                          alt={'post image'}
-                          src={image.src}
-                          width={400}
-                          height={400}
-                          className='aspect-square overflow-hidden object-cover rounded-xl shadow'
-                        />
+                        <Zoom>
+                          <Image
+                            alt={'post image'}
+                            src={image.src}
+                            width={400}
+                            height={400}
+                            className='aspect-square overflow-hidden object-cover rounded-xl shadow'
+                          />
+                        </Zoom>
                       </div>
                     ))}
                   </div>
