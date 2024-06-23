@@ -98,6 +98,8 @@ export const posts = pgTable('posts', {
   authorId: text('authorId')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
+
+  createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
 });
 
 export const postImages = pgTable('postImages', {

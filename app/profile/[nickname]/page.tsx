@@ -2,8 +2,8 @@ import { auth } from '@/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { db } from '@/db/drizzle';
-import { followers as followersTable } from '@/db/schema';
-import { and, count, eq } from 'drizzle-orm';
+import { followers as followersTable, posts } from '@/db/schema';
+import { and, count, desc, eq } from 'drizzle-orm';
 import { Ellipsis } from 'lucide-react';
 import Link from 'next/link';
 import { EditProfileDialog } from './edit-profile-dialog';
@@ -30,6 +30,7 @@ export default async function Page({
         with: {
           images: true,
         },
+        orderBy: desc(posts.createdAt),
       },
     },
   });

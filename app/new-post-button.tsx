@@ -43,9 +43,9 @@ export const NewPostButton = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant='bluish' size='lg' className='rounded-3xl'>
-          <SquarePen className='mr-1 size-5' />
-          <span>새 게시물</span>
+        <Button variant='bluish' className='rounded-3xl w-full sm:w-fit'>
+          <SquarePen className='sm:mr-1 size-5' />
+          <span className='hidden sm:block'>새 게시물</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className='p-0 max-w-[600px] top-[10%] translate-y-[-10%]'>

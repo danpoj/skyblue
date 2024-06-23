@@ -17,7 +17,7 @@ export const LeftSidebar = async () => {
   const session = await auth();
 
   return (
-    <header className='w-60 p-4 space-y-3 h-fit sticky top-0'>
+    <header className='w-20 sm:w-60 flex flex-col pt-3 space-y-3 h-fit sticky top-0 px-2'>
       {session ? (
         <Suspense
           fallback={
@@ -72,11 +72,11 @@ export const LeftSidebarLoggedIn = async ({ id }: { id: string }) => {
 
   return (
     <>
-      <div className='w-fit'>
+      <div className='w-full flex items-center justify-center sm:justify-start sm:pl-4'>
         <UserAvatar user={user} />
       </div>
 
-      <nav className='flex flex-col'>
+      <nav className='flex flex-col w-full'>
         {links.map((link) => {
           const Icon = link.icon;
 
@@ -84,12 +84,12 @@ export const LeftSidebarLoggedIn = async ({ id }: { id: string }) => {
             <Button
               key={link.href}
               asChild
-              className='h-12 justify-start text-xl font-normal'
+              className='h-12 justify-center sm:justify-start text-xl font-normal w-full'
               variant='ghost'
             >
               <Link href={link.href}>
-                <Icon className='mr-3' />
-                <span>{link.text}</span>
+                <Icon className='sm:mr-3' />
+                <span className='hidden sm:inline'>{link.text}</span>
               </Link>
             </Button>
           );
