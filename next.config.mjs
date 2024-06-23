@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   output: 'standalone',
   images: {
+    unoptimized,
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
