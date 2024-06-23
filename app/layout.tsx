@@ -6,6 +6,9 @@ import { Metadata } from 'next';
 import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
 import { QueryProvider } from '@/components/provider/query-provider';
+import { Suspense } from 'react';
+import { Avatar } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = {
   title: 'Skyblue',
@@ -22,7 +25,25 @@ export default function RootLayout({
       <body className={cn(inter.className, 'overscroll-none')}>
         <QueryProvider>
           <div className='h-screen max-w-[76rem] mx-auto flex'>
-            <LeftSidebar />
+            <Suspense
+              fallback={
+                <>
+                  <Avatar className='h-14 w-14'>
+                    <Skeleton className='w-14 h-14 flex items-center justify-center' />
+                  </Avatar>
+
+                  <nav className='flex flex-col gap-1'>
+                    {Array.from({ length: 3 })
+                      .fill(0)
+                      .map((_, index) => (
+                        <Skeleton className='h-10 w-full' key={index} />
+                      ))}
+                  </nav>
+                </>
+              }
+            >
+              <LeftSidebar />
+            </Suspense>
             <main className='flex-1 border-x border-gray-200'>{children}</main>
             <RightSidebar />
           </div>
