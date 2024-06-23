@@ -153,7 +153,6 @@ export default async function Page({
                     {post.images.map((image, index) => (
                       <div key={image.id}>
                         <Image
-                          unoptimized
                           alt={'post image'}
                           src={image.src}
                           width={400}
