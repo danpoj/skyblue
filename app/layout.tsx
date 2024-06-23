@@ -5,6 +5,7 @@ import './globals.css';
 import { Metadata } from 'next';
 import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
+import { QueryProvider } from '@/components/provider/query-provider';
 
 export const metadata: Metadata = {
   title: 'Skyblue',
@@ -19,13 +20,15 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={cn(inter.className, 'overscroll-none')}>
-        <div className='h-screen max-w-[76rem] mx-auto flex'>
-          <LeftSidebar />
-          <main className='flex-1 border-x border-gray-200'>{children}</main>
-          <RightSidebar />
-        </div>
+        <QueryProvider>
+          <div className='h-screen max-w-[76rem] mx-auto flex'>
+            <LeftSidebar />
+            <main className='flex-1 border-x border-gray-200'>{children}</main>
+            <RightSidebar />
+          </div>
 
-        <Toaster />
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );

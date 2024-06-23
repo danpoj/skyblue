@@ -1,6 +1,5 @@
 'use client';
 
-import { addPost } from '@/actions/post';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,15 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { users } from '@/db/schema';
-import { generateImageURL } from '@/lib/generate-image-url';
-import { generateRandomString } from '@/lib/generate-random-string';
-import { getSignedUrlForS3Object } from '@/lib/s3';
 import { cn } from '@/lib/utils';
 import { InferSelectModel } from 'drizzle-orm';
 import { ImageIcon, SquarePen, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useAddPost } from './use-add-post';
 import { toast } from 'sonner';
 
 export const NewPostButton = ({
@@ -30,7 +27,6 @@ export const NewPostButton = ({
 }: {
   user: InferSelectModel<typeof users>;
 }) => {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
   const [images, setImages] = useState<
@@ -39,6 +35,8 @@ export const NewPostButton = ({
       base64: string;
     }[]
   >([]);
+
+  const addPostMutation = useAddPost();
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -58,72 +56,29 @@ export const NewPostButton = ({
             <AlertDialogCancel>취소</AlertDialogCancel>
           </Button>
           <Button
-            asChild
             variant='fancyBluish'
             className='rounded-3xl px-6'
             size='sm'
+            onClick={async () => {
+              if (text.trim().length === 0) {
+                toast('텍스트를 입력해주세요');
+                return;
+              }
+
+              setOpen(false);
+
+              addPostMutation.mutate(
+                { images, text },
+                {
+                  onSuccess: () => {
+                    setText('');
+                    setImages([]);
+                  },
+                }
+              );
+            }}
           >
-            <AlertDialogAction
-              onClick={async () => {
-                setOpen(false);
-
-                const keys: string[] = [];
-
-                if (images.length > 0) {
-                  const presignedURLPromises = images.map((image) => {
-                    const key = `${generateRandomString(6)}-${image.file.name}`;
-                    keys.push(key);
-
-                    return getSignedUrlForS3Object(key, image.file.type);
-                  });
-
-                  toast('presigned URL 생성 중...');
-
-                  const presignedURLs = await Promise.all(presignedURLPromises);
-
-                  const uploadImagesPromises = presignedURLs.map((url, index) =>
-                    fetch(url, {
-                      method: 'PUT',
-                      body: images[index].file,
-                      headers: { 'Content-Type': images[index].file.type },
-                    })
-                  );
-
-                  toast('R2에 이미지 업로드 중...');
-
-                  await Promise.all(uploadImagesPromises);
-                }
-
-                toast('DB에 포스트 업로드 중...');
-
-                const data = await addPost({
-                  text: text,
-                  images:
-                    keys.length > 0
-                      ? keys.map((key) => generateImageURL(key))
-                      : undefined,
-                });
-
-                if (!data.success) {
-                  toast('Failed 🥹', {
-                    description: data.message,
-                  });
-
-                  return;
-                }
-
-                toast('Success 🎉', {
-                  description: data.message,
-                });
-
-                setText('');
-                setImages([]);
-
-                router.refresh();
-              }}
-            >
-              게시하기
-            </AlertDialogAction>
+            게시하기
           </Button>
         </AlertDialogHeader>
         <div>
@@ -134,6 +89,7 @@ export const NewPostButton = ({
             </Avatar>
             <Textarea
               value={text}
+              required
               onChange={(e) => setText(e.target.value)}
               spellCheck={false}
               className='min-h-[180px] text-lg'

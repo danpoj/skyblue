@@ -1,6 +1,5 @@
 'use client';
 
-import { editUser } from '@/actions/user';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,18 +20,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { followers, users } from '@/db/schema';
-import { generateImageURL } from '@/lib/generate-image-url';
-import { generateRandomString } from '@/lib/generate-random-string';
-import { getSignedUrlForS3Object } from '@/lib/s3';
+import { users } from '@/db/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InferSelectModel } from 'drizzle-orm';
 import { Camera } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { z } from 'zod';
+import { useEditUser } from './use-edit-user';
 
 const formSchema = z.object({
   image: z
@@ -45,7 +41,7 @@ const formSchema = z.object({
   description: z.string(),
 });
 
-type Form = z.infer<typeof formSchema>;
+export type Form = z.infer<typeof formSchema>;
 
 type User = Omit<
   InferSelectModel<typeof users>,
@@ -54,6 +50,7 @@ type User = Omit<
 
 export const EditProfileDialog = ({ user }: { user: User }) => {
   const [open, setOpen] = useState(false);
+  const editUserMutation = useEditUser();
   const router = useRouter();
 
   const form = useForm<Form>({
@@ -67,39 +64,7 @@ export const EditProfileDialog = ({ user }: { user: User }) => {
   const onSubmit = async (values: Form) => {
     setOpen(false);
 
-    let key: string | undefined;
-
-    if (values.image) {
-      key = `${generateRandomString(6)}-${values.image.name}`;
-
-      const uploadURL = await getSignedUrlForS3Object(key, values.image.type);
-
-      toast('업로드 중... 🚧', { description: '잠시만 기다려주세요' });
-
-      await fetch(uploadURL, {
-        method: 'PUT',
-        body: values.image,
-        headers: { 'Content-Type': values.image.type },
-      });
-    }
-
-    const data = await editUser({
-      description: values.description,
-      nickname: values.nickname,
-      image: values.image ? generateImageURL(key!) : undefined,
-    });
-
-    if (data.message === 'error') {
-      toast('Failed 🥹', {
-        description: data.error,
-      });
-
-      return;
-    }
-
-    toast('Success 🎉', { description: '유저 정보가 업데이트 되었습니다' });
-    router.refresh();
-    router.replace(`/profile/${data.data.nickname}`);
+    editUserMutation.mutate(values);
   };
 
   return (

@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
+export default function ProfileSkeleton() {
   return (
     <div>
       <div className='px-4 items-center bg-[#0070FF] flex gap-2 h-[9rem]'></div>
