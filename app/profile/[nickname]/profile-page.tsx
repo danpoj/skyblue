@@ -13,8 +13,6 @@ import { EditProfileDialog } from './edit-profile-dialog';
 import { FollowButton } from './follow-button';
 import ProfileSkeleton from './profile-skeleton';
 import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
-import { motion } from 'framer-motion';
 
 export function ProfilePage({
   nickname,
@@ -93,49 +91,47 @@ export function ProfilePage({
 
         <p className='px-4 text-slate-800'>{user.description}</p>
 
-        <div className=''>
+        <div className='border-y my-10'>
           {user.posts.map((post) => (
-            <div key={post.id} className='p-4 border-b'>
-              <div className='flex items-start gap-3'>
+            <div key={post.id} className='px-4 py-6 border-b space-y-3'>
+              <div className='flex gap-3'>
                 <Avatar className='size-14'>
                   <AvatarImage src={user.image} />
                   <AvatarFallback>{user.nickname}</AvatarFallback>
                 </Avatar>
-
-                <div className='space-y-1'>
-                  <div className='flex items-end gap-1'>
-                    <p className='font-semibold text-lg'>{user.nickname}</p>
-                    <p className='text-muted-foreground'>{user.handle}</p>
-                  </div>
-                  <p>{post.text}</p>
-
-                  <div
-                    className={cn(
-                      'grid gap-2',
-                      post.images.length === 1 || post.images.length === 2
-                        ? 'grid-cols-2'
-                        : post.images.length === 3
-                        ? 'grid-cols-3'
-                        : post.images.length === 4
-                        ? 'grid-cols-2'
-                        : ''
-                    )}
-                  >
-                    {post.images.map((image, index) => (
-                      <div key={image.id}>
-                        <Zoom>
-                          <Image
-                            alt={'post image'}
-                            src={image.src}
-                            width={400}
-                            height={400}
-                            className='aspect-square overflow-hidden object-cover rounded-xl shadow'
-                          />
-                        </Zoom>
-                      </div>
-                    ))}
-                  </div>
+                <div>
+                  <p className='font-semibold text-lg'>{user.nickname}</p>
+                  <p className='text-muted-foreground'>{user.handle}</p>
                 </div>
+              </div>
+
+              <p>{post.text}</p>
+
+              <div
+                className={cn(
+                  'grid gap-2',
+                  post.images.length === 1 || post.images.length === 2
+                    ? 'grid-cols-2'
+                    : post.images.length === 3
+                    ? 'grid-cols-3'
+                    : post.images.length === 4
+                    ? 'grid-cols-2'
+                    : ''
+                )}
+              >
+                {post.images.map((image) => (
+                  <div key={image.id}>
+                    <Zoom>
+                      <Image
+                        alt={'post image'}
+                        src={image.src}
+                        width={400}
+                        height={400}
+                        className='aspect-square overflow-hidden object-cover rounded-xl shadow'
+                      />
+                    </Zoom>
+                  </div>
+                ))}
               </div>
             </div>
           ))}

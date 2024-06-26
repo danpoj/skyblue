@@ -1,14 +1,9 @@
-import { signIn } from '@/auth';
+import { SignInAction } from './sign-in-action';
 import { Button } from './ui/button';
 
 export function SignIn() {
   return (
-    <form
-      action={async () => {
-        'use server';
-        await signIn('google', { redirectTo: '/' });
-      }}
-    >
+    <form action={SignInAction}>
       <Button
         type='submit'
         variant='bluish'

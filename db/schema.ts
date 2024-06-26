@@ -132,7 +132,7 @@ export const usersRelation = relations(users, ({ many }) => ({
 }));
 
 export const postsRelation = relations(posts, ({ one, many }) => ({
-  posts: one(users, {
+  user: one(users, {
     fields: [posts.authorId],
     references: [users.id],
     relationName: 'user_posts',

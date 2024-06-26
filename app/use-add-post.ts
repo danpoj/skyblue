@@ -5,10 +5,12 @@ import { generateImageURL } from '@/lib/generate-image-url';
 import { generateRandomString } from '@/lib/generate-random-string';
 import { getSignedUrlForS3Object } from '@/lib/s3';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export const useAddPost = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutation = useMutation<
     undefined,
@@ -68,6 +70,7 @@ export const useAddPost = () => {
       });
 
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+      router.refresh();
     },
     onError: (error) => {
       toast('Failed 🥹', {

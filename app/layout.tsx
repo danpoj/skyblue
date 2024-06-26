@@ -1,5 +1,5 @@
 import { inter } from '@/lib/fonts';
-import { LeftSidebar } from '@/app/left-sidebar';
+
 import { RightSidebar } from '@/app/right-sidebar';
 import './globals.css';
 import { Metadata } from 'next';
@@ -9,6 +9,11 @@ import { QueryProvider } from '@/components/provider/query-provider';
 import { Suspense } from 'react';
 import { Avatar } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SidebarToggler } from './sidebar-toggler';
+import { SidebarProvider } from '@/components/provider/sidebar-provider';
+import { LeftSidebar } from './left-sidebar';
+
+import 'react-medium-image-zoom/dist/styles.css';
 
 export const metadata: Metadata = {
   title: 'Skyblue',
@@ -24,7 +29,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={cn(inter.className, 'overscroll-none')}>
         <QueryProvider>
-          <div className='h-screen max-w-[76rem] mx-auto flex'>
+          <div className='max-w-[76rem] mx-auto flex'>
             <Suspense
               fallback={
                 <>
@@ -42,7 +47,10 @@ export default function RootLayout({
                 </>
               }
             >
-              <LeftSidebar />
+              <SidebarProvider>
+                <LeftSidebar />
+                <SidebarToggler />
+              </SidebarProvider>
             </Suspense>
             <main className='flex-1 border-x border-gray-200'>{children}</main>
             <RightSidebar />
